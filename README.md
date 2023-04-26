@@ -13,6 +13,5 @@ The app consists of three tabs:
 
 The app also updates in real-time as the user makes selections, providing a seamless and intuitive user experience. It allows users to select a cause of death from a dropdown menu, which updates the line chart to display the corresponding age-adjusted death rate over time, and description of the cause of death. 
 
-
 Link to streamlit app: https://bediluj-age-adjusted-death-rate-aadr-39a068.streamlit.app/
 
