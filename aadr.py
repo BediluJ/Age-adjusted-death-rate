@@ -8,14 +8,18 @@ df = pd.read_csv(url)
 
 # Define the sidebar
 st.sidebar.title("Select cause of death:")
-cause_of_death = st.sidebar.selectbox("Cause of death:", df["Cause Name"].unique())
+#cause_of_death = st.sidebar.selectbox("Cause of death:", df["Cause Name"].unique())
+cause_of_death = st.sidebar.selectbox("Cause of death:", df["Cause Name"].unique()[1:],key="cause_of_death_selector")
+
+
+
 
 # Filter the data based on the selected cause of death and calculate the age-adjusted death rate
 filtered_df = df[df["Cause Name"] == cause_of_death]
 age_adjusted_rate = filtered_df["Age-adjusted Death Rate"].mean()
 
 # Define the tabs
-tabs = ["Overview", "Line chart", "Descriptions"]
+tabs = ["Overview", "AADR in US", "AADR in each specific States", "Descriptions of cause of death"]
 active_tab = st.sidebar.radio("Select a tab", tabs)
 
 #define dictionaries
@@ -43,13 +47,14 @@ if active_tab == "Overview":
     st.write("This app allows you to explore the age-adjusted death rates for various causes of death in the United States over the past two decades.")
     st.write("Age-adjusted death rate is a measure of mortality that takes into account the differences in age distribution between populations. It is calculated by adjusting the crude death rate (total number of deaths per 100,000 population) to account for differences in age distribution across populations.")
     st.write("By adjusting the death rate for differences in age distribution, the age-adjusted death rate provides a more accurate estimate of the true risk of death in a population and can help identify differences in mortality rates due to age, rather than other factors such as lifestyle, socioeconomic status, or access to healthcare.")
-    st.write("Additional information can be found [here](https://schs.dph.ncdhhs.gov/schs/pdf/primer13_2.pdf)")
-    st.write("The app allows you to filter the data by cause of death and year range, and visualize the results using interactive charts. Select a cause of death from the sidebar to view the age-adjusted death rate.")
-elif active_tab == "Line chart":
+    st.write("Additional information about AADR can be found [here](https://schs.dph.ncdhhs.gov/schs/pdf/primer13_2.pdf).")
+    st.write ("The age-adjusted death rate in the United States has decreased over time, but it can vary depending on the cause of death and the state. In this interactive app, by selecting different causes of death and different states, we can observe differences in the age-adjusted death rate. Therefore, it is important to understand these variations in order to address the underlying health issues and improve overall health outcomes in the United States.")
+    st.write("Select a cause of death from the sidebar to view the age-adjusted death rate.")
+elif active_tab == "AADR in US":
     # Display the line chart
     chart_data = filtered_df.groupby("Year")["Age-adjusted Death Rate"].mean().reset_index()
-    chart = alt.Chart(chart_data).mark_line().encode(
-        x="Year",
+    chart = alt.Chart(chart_data).mark_line(color="red").encode(
+        x=alt.X ("Year", axis=alt.Axis(format="")),
         y=alt.Y("Age-adjusted Death Rate", scale=alt.Scale(zero=False))
     )
     st.write("# Age-Adjusted Death Rate over Time")
@@ -57,14 +62,36 @@ elif active_tab == "Line chart":
     st.write("The age-adjusted death rate is the number of deaths per 100,000 people, adjusted for differences in age distribution across the population.")
     st.write("Use the sidebar to select a different cause of death.")
     st.altair_chart(chart, use_container_width=True)
+    st.write(f"Age-adjusted death rate for {cause_of_death} in the United States : {age_adjusted_rate:.2f}")
+elif active_tab == "AADR in each specific States":
+    # display Bar Chart  by State
+    st.write("# Age-Adjusted Death Rate over Time in Each States")
+    states = df['State'].unique().tolist()
+    selected_state = st.selectbox('Select a state:', states) 
+    filtered_df = df.loc[(df['State'] == selected_state) & (df['Cause Name'] == cause_of_death)]
+    avg_rate = filtered_df['Age-adjusted Death Rate'].mean()
+    bar_data = filtered_df.groupby(["Year"])[["Age-adjusted Death Rate"]].mean().reset_index()
+    chart = alt.Chart(bar_data).mark_area(color="green").encode(
+        x=alt.X("Year", axis=alt.Axis(format="")),
+        y= alt.Y("Age-adjusted Death Rate", scale=alt.Scale(zero=False))        
+    ).properties(
+    title=f'Age-Adjusted Death Rates by {cause_of_death} as Cause of Death for {selected_state}.'
+    )
+    # Display chart
+    st.altair_chart(chart, use_container_width=True)
+    
+    #avg_rate = filtered_df['Age-adjusted Death Rate'].mean()
+    st.write(f"Age-adjusted death rate for {cause_of_death} in {selected_state}: {avg_rate:.2f}")
+
+    
 else:
     # Display the descriptions
-    if active_tab == "Descriptions":
-        st.write(f"**Description of Cause of death: {cause_of_death}**")
+    if active_tab == "Descriptions of cause of death":
+        st.write(f"# Description of cause of death: {cause_of_death} ")
         st.write(cause_descriptions.get(cause_of_death, "No description available."))
 
         st.write("In this app, you can select a cause of death from the sidebar to view the age-adjusted death rate for that cause of death.")
+        st.write(f"Age-adjusted death rate for {cause_of_death} in the United States : {age_adjusted_rate:.2f}")
 
 
-# Display the age-adjusted death rate
-st.write(f"Age-adjusted death rate for {cause_of_death}: {age_adjusted_rate:.2f}")
+
