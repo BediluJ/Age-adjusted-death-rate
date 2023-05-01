@@ -8,7 +8,8 @@ The data is sourced from the CDCs Wide-ranging Online Data for Epidemiologic Res
 The app consists of three tabs:
 
   - Overview: Provides a brief overview of the data and app functionality.
-  - Line Chart: Displays a line chart of the age-adjusted death rate over time for the selected cause of death.
+  - AADR in US: Displays a line chart of the age-adjusted death rate over time for the selected cause of death.
+  - AADR in each specific States: Displays a area chart of the age-adjusted death rate over time for the selected cause of death in specific States in US.
   - Descriptions: Provides more detailed information about each cause of death.
 
 The app also updates in real-time as the user makes selections, providing a seamless and intuitive user experience. It allows users to select a cause of death from a dropdown menu, which updates the line chart to display the corresponding age-adjusted death rate over time, and description of the cause of death. 
