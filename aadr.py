@@ -44,7 +44,6 @@ if active_tab == "Overview":
     st.markdown('''
 # Age-Adjusted Death Rates in the United States, 1999-2017
 ''')
-    st.write("This app allows you to explore the age-adjusted death rates for various causes of death in the United States over the past two decades.")
     st.write("Age-adjusted death rate (AADR) is a measure of mortality that takes into account the differences in age distribution between populations. It is calculated by adjusting the crude death rate (total number of deaths per 100,000 population) to account for differences in age distribution across populations.")
     st.write("By adjusting the death rate for differences in age distribution, the age-adjusted death rate provides a more accurate estimate of the true risk of death in a population and can help identify differences in mortality rates due to age, rather than other factors such as lifestyle, socioeconomic status, or access to healthcare.")
     st.write("Additional information about AADR can be found [here](https://schs.dph.ncdhhs.gov/schs/pdf/primer13_2.pdf).")
